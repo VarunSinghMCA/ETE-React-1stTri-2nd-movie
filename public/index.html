@@ -9,7 +9,7 @@
 <body class="min-h-screen bg-gradient-to-br from-[#254252] to-[#171c2d] p-6">
   <div class="max-w-4xl mx-auto">
     <h1 class="text-4xl font-extrabold text-center mb-8 text-white drop-shadow-lg tracking-wide">🎬 Movie Catalog</h1>
-    <!-- Movie Form -->
+    <!-- form -->
     <form id="movieForm" class="backdrop-blur-md bg-white/20 border border-white/30 shadow-2xl rounded-2xl p-8 mb-10 flex flex-col gap-4" style="box-shadow: 0 8px 32px 0 rgba(31,38,135,0.25);">
       <input type="text" id="title" placeholder="Title" class="w-full px-4 py-2 rounded-lg bg-white/40 text-black focus:outline-none focus:ring-2 focus:ring-[#f9982f] placeholder-gray-500">
       <input type="text" id="director" placeholder="Director" class="w-full px-4 py-2 rounded-lg bg-white/40 text-black focus:outline-none focus:ring-2 focus:ring-[#f9982f] placeholder-gray-500">
@@ -19,7 +19,7 @@
       <button type="submit" class="bg-[#f9982f] text-white font-bold px-6 py-2 rounded-lg shadow hover:bg-[#e37239] transition">Add Movie</button>
     </form>
 
-    <!-- Movies List -->
+    <!-- movies -->
     <div id="moviesList" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
   </div>
 
@@ -32,21 +32,19 @@
     const res = await fetch(API_URL);
     const movies = await res.json();
     const list = document.getElementById("moviesList");
-    list.innerHTML = "";
-    movies.forEach(m => {
-      list.innerHTML += `
-        <div class="backdrop-blur-md bg-white/30 border border-white/30 rounded-2xl shadow-lg p-6 flex flex-col gap-2 hover:scale-[1.03] hover:shadow-2xl transition" style="box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);">
-          <h2 class="text-2xl font-bold text-[#f9982f] mb-1 drop-shadow">${m.title}</h2>
-          <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">🎬 Director:</span> ${m.director}</p>
-          <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">🎭 Genre:</span> ${m.genre}</p>
-          <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">📅 Year:</span> ${m.release_year}</p>
-          <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">⭐ Rating:</span> ${m.rating}</p>
-          <div class="flex gap-2 mt-2">
-            <button onclick="editMovie('${m.id}', '${m.title.replace(/'/g, "&#39;")}', '${m.director.replace(/'/g, "&#39;")}', '${m.genre.replace(/'/g, "&#39;")}', '${m.release_year}', '${m.rating}')" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">Edit</button>
-            <button onclick="deleteMovie('${m.id}')" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Delete</button>
-          </div>
-        </div>`;
-    });
+    list.innerHTML = movies.map(m => `
+      <div class="backdrop-blur-md bg-white/30 border border-white/30 rounded-2xl shadow-lg p-6 flex flex-col gap-2 hover:scale-[1.03] hover:shadow-2xl transition" style="box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);">
+        <h2 class="text-2xl font-bold text-[#f9982f] mb-1 drop-shadow">${m.title}</h2>
+        <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">🎬 Director:</span> ${m.director}</p>
+        <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">🎭 Genre:</span> ${m.genre}</p>
+        <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">📅 Year:</span> ${m.release_year}</p>
+        <p class="text-gray-200"><span class="font-semibold text-[#f9982f]">⭐ Rating:</span> ${m.rating}</p>
+        <div class="flex gap-2 mt-2">
+          <button onclick="editMovie('${m.id}', '${m.title.replace(/'/g, "&#39;")}', '${m.director.replace(/'/g, "&#39;")}', '${m.genre.replace(/'/g, "&#39;")}', '${m.release_year}', '${m.rating}')" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">Edit</button>
+          <button onclick="deleteMovie('${m.id}')" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">Delete</button>
+        </div>
+      </div>
+    `).join("");
   }
 
   window.deleteMovie = async function(id) {
